@@ -1,0 +1,2 @@
+import{c as s}from"./call-bind-apply-helpers.0ebdf50c.1755689448535.js";import{g as y}from"./gopd.30775706.1755689448535.js";var o,f;function u(){if(f)return o;f=1;var i=s,c=y,p;try{p=[].__proto__===Array.prototype}catch(t){if(!t||typeof t!="object"||!("code"in t)||t.code!=="ERR_PROTO_ACCESS")throw t}var r=!!p&&c&&c(Object.prototype,"__proto__"),a=Object,n=a.getPrototypeOf;return o=r&&typeof r.get=="function"?i([r.get]):typeof n=="function"?function(e){return n(e==null?e:a(e))}:!1,o}export{u as r};
+//# sourceMappingURL=dunder-proto.9525b49a.1755689448535.js.map
