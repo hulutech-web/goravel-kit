@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <!-- 腾讯地图 -->
+      <script charset="utf-8" type="text/javascript"
+              src="https://map.qq.com/api/gljs?v=1.exp&key=RFRBZ-UBIC2-LBGUH-CAIYP-WAOI2-SBFTI&libraries=service"></script>
+    <title>Vite + Vue + TS</title>
+    <script type="module" crossorigin src="/assets/index-a4f0172e.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/@vue.3ad65df9.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/@babel.ff5fac95.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/resize-observer-polyfill.0f9f8adb.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vue-types.ef06c517.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/@ctrl.110cde02.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/@ant-design.002a57d7.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/dom-align.ecb06dd6.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/lodash-es.3d27f5e2.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/dayjs.d60d73bd.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/async-validator.dee29e8b.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/compute-scroll-into-view.183f845a.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/scroll-into-view-if-needed.583c97c5.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/ant-design-vue.00fd9e7c.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vue-router.9360959a.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vue-demi.71ba0ef2.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/pinia.11f4bfaa.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/axios.dcb3bfcc.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/es-errors.c75f5a96.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/object-inspect.0fbacf7d.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/side-channel-list.c76608c5.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/es-object-atoms.11ea1ab9.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/math-intrinsics.9389030e.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/gopd.30775706.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/es-define-property.27915812.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/has-symbols.76fb15e9.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/function-bind.61637ca6.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/call-bind-apply-helpers.0833f3e9.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/dunder-proto.05150bcd.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/get-proto.757e385d.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/hasown.67f3f833.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/get-intrinsic.7d53f00e.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/call-bound.09054f06.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/side-channel-map.76c430fe.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/side-channel-weakmap.4b9abb6a.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/side-channel.9d8f1847.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/qs.247a6393.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/enquire.js.29d23a08.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/lodash.5999789d.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/js-cookie.df2f1d76.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/@vueuse.60746e97.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/clipboard.f49c93fb.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/highlight.js.1f23b1ae.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/stepin.df3b4e80.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/nprogress.dafb99c9.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/xe-utils.0b26132f.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/dom-zindex.d72a3c32.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vue.5e2bff9c.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/@vxe-ui.1c5cc959.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vxe-table.a5304289.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vxe-pc-ui.ed308165.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/@popperjs.f3391c26.1753605037589.js">
+    <link rel="modulepreload" crossorigin href="/assets/vue-pick-colors.10d84206.1753605037589.js">
+    <link rel="stylesheet" href="/assets/ant-design-vue.05439c28.1753605037589.css">
+    <link rel="stylesheet" href="/assets/stepin.30cf13dd.1753605037589.css">
+    <link rel="stylesheet" href="/assets/nprogress.5466ebbd.1753605037589.css">
+    <link rel="stylesheet" href="/assets/@vxe-ui.38599952.1753605037589.css">
+    <link rel="stylesheet" href="/assets/vxe-table.e1667f62.1753605037589.css">
+    <link rel="stylesheet" href="/assets/vxe-pc-ui.577dd202.1753605037589.css">
+    <link rel="stylesheet" href="/assets/index.94f350d9.1753605037589.css">
+  </head>
+  <body>
+    <div id="stepin-app">
+      <style>
+        body {
+          height: 100vh;
+          text-align: center;
+          align-items: center;
+          background-color: #003f8c;
+          display: flex;
+          justify-content: center;
+        }
+        .loader {
+          color: rgb(124, 124, 124);
+          font-family: "Poppins",sans-serif;
+          font-weight: 500;
+          font-size: 25px;
+          box-sizing: content-box;
+          height: 40px;
+          padding: 10px 10px;
+          display: flex;
+          border-radius: 8px;
+        }
+
+        .words {
+          overflow: hidden;
+        }
+
+        .word {
+          display: block;
+          height: 100%;
+          padding-left: 6px;
+          color: #ffca29;
+          animation: spin_4991 4s infinite;
+        }
+
+        @keyframes spin_4991 {
+          10% {
+            transform: translateY(-105%);
+          }
+
+          25% {
+            transform: translateY(-100%);
+          }
+
+          35% {
+            transform: translateY(-205%);
+          }
+
+          50% {
+            transform: translateY(-200%);
+          }
+
+          60% {
+            transform: translateY(-305%);
+          }
+
+          75% {
+            transform: translateY(-300%);
+          }
+
+          85% {
+            transform: translateY(-405%);
+          }
+
+          100% {
+            transform: translateY(-400%);
+          }
+        }
+      </style>
+      <img style="margin-bottom: 8px;" width="64px" src="/vite.svg" />
+      <div class="loader">
+        <div>loading</div>
+        <div class="words">
+            <span class="word">buttons</span>
+            <span class="word">forms</span>
+            <span class="word">switches</span>
+            <span class="word">cards</span>
+            <span class="word">buttons</span>
+        </div>
+      </div>
+      <div class="" style="color: rgba(255, 255, 255, 0.35)">首次加载可能较慢，请耐心等待...</div>
+    </div>
+    
+    <script>
+      if (!global) {
+        var global = globalThis;
+      }
+    </script>
+  </body>
+</html>

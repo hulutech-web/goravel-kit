@@ -1,0 +1,8 @@
+/front-end/node_modules
+/.idea
+.idea/
+/.git
+/.vscode
+/.env
+/storage/**/*
+/packages/goravel_crud/panel
