@@ -1,1 +1,0 @@
-{"version":3,"file":"import_history.51def86e.1753605037589.js","sources":["../../src/pages/coupon/import_history.vue"],"sourcesContent":["<script setup lang=\"ts\">\n\n</script>\n\n<template>\n<div>\n  <h1>导入历史</h1>\n</div>\n</template>\n\n<style scoped lang=\"less\">\n\n</style>"],"names":["_createElementVNode"],"mappings":"4jFAMEA,EAAA,KAAA,KAAA,OAAA,EAAA"}

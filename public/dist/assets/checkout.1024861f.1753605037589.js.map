@@ -1,1 +1,0 @@
-{"version":3,"file":"checkout.1024861f.1753605037589.js","sources":["../../src/pages/schedule/checkout.vue"],"sourcesContent":["<script setup lang=\"ts\">\n\n</script>\n\n<template>\n<div>\n  核销\n</div>\n</template>\n\n<style scoped lang=\"less\">\n\n</style>  "],"names":["_openBlock","_createElementBlock"],"mappings":"ghFAKA,OAAAA,EAAA,EAAAC,EAAA,MAAA,KAAA;AAAA;AAAA,CAAA"}

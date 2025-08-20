@@ -1,2 +1,0 @@
-import{r as l}from"./function-bind.48f717dc.1755689448535.js";import{t as i}from"./es-errors.c75f5a96.1755689448535.js";var n,a;function p(){return a||(a=1,n=Function.prototype.call),n}var e,t;function c(){return t||(t=1,e=Function.prototype.apply),e}var u=typeof Reflect<"u"&&Reflect&&Reflect.apply,o=l(),f=c(),y=p(),v=u,d=v||o.call(y,f),s=l(),A=i,$=p(),F=d,m=function(r){if(r.length<1||typeof r[0]!="function")throw new A("a function is required");return F(s,$,r)};export{p as a,m as c,c as r};
-//# sourceMappingURL=call-bind-apply-helpers.0ebdf50c.1755689448535.js.map
