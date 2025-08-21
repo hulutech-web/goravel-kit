@@ -4,4 +4,3 @@ front-end/node_modules
 /.git
 /.vscode
 /.env
-/storage/**/*
