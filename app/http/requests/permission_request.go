@@ -1,4 +1,3 @@
-
 package requests
 
 import (
@@ -7,17 +6,15 @@ import (
 )
 
 type PermissionRequest struct {
-
 	Name string `json:"name" form:"name"`
 
 	Code string `json:"code" form:"code"`
 
-	Type string `json:"type" form:"type"`
+	Type int `json:"type" form:"type"`
 
 	Description string `json:"description" form:"description"`
 
-	MenuId string `json:"menu_id" form:"menu_id"`
-
+	MenuID uint `json:"menu_id" form:"menu_id"`
 }
 
 func (r *PermissionRequest) Authorize(ctx http.Context) error {
@@ -27,7 +24,6 @@ func (r *PermissionRequest) Authorize(ctx http.Context) error {
 func (r *PermissionRequest) Filters(ctx http.Context) error {
 	return nil
 }
-
 
 func (r *PermissionRequest) Rules(ctx http.Context) map[string]string {
 	return map[string]string{
@@ -41,7 +37,6 @@ func (r *PermissionRequest) Rules(ctx http.Context) map[string]string {
 		"description": "",
 
 		"menu_id": "",
-
 	}
 }
 

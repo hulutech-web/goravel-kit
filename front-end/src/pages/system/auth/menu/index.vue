@@ -255,9 +255,9 @@ const handleMenuType = (val: string) => {
   console.log(val, '--handleMenuType')
 }
 
-const {menuList} = storeToRefs(menuStore);
-onMounted(() => {
-  Api.menuController.list()
+let menuList=ref([])
+onMounted(async () => {
+  menuList.value = await Api.menuController.list()
 });
 </script>
 <template>

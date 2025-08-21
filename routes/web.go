@@ -17,6 +17,7 @@ func Web() {
 	})
 
 	facades.Route().Static("/uploads", path.Public("uploads"))
+	facades.Route().Static("/dist", path.Public("dist"))
 	facades.Route().Static("/assets", path.Public("dist/assets"))
 
 	websocketHandler := &servers.Controller{}

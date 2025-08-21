@@ -59,7 +59,9 @@ func (r *MenuController) Index(ctx http.Context) http.Response {
 func (r *MenuController) List(ctx http.Context) http.Response {
 	menus := []models.Menu{}
 	queries := ctx.Request().Queries()
-	return httpfacade.NewResult(ctx).SearchByParams(queries, nil).Success("", menus)
+	httpfacade.NewResult(ctx).SearchByParams(queries, nil).List(&menus)
+	treeData := new(models.Menu).BuildMenuTree(menus, 0)
+	return httpfacade.NewResult(ctx).Success("", treeData)
 }
 func (r *MenuController) Show(ctx http.Context) http.Response {
 	id := ctx.Request().RouteInt("id")
@@ -89,7 +91,22 @@ func (r *MenuController) Store(ctx http.Context) http.Response {
 	if errors != nil {
 		return httpfacade.NewResult(ctx).ValidError("", errors.All())
 	}
-	menu := models.Menu{}
+
+	menu := map[string]interface{}{
+		"title":       menuRequest.Title,
+		"pid":         menuRequest.Pid,
+		"name":        menuRequest.Name,
+		"path":        menuRequest.Path,
+		`component`:   menuRequest.Component,
+		"icon":        menuRequest.Icon,
+		"menu_type":   menuRequest.MenuType,
+		"cacheable":   menuRequest.Cacheable,
+		"render_menu": menuRequest.RenderMenu,
+		"sort":        menuRequest.Sort,
+		"target":      menuRequest.Target,
+		"badge":       menuRequest.Badge,
+		"permission":  menuRequest.Permission,
+	}
 	//todo add request values
 	facades.Orm().Query().Model(&models.Menu{}).Create(&menu)
 	return httpfacade.NewResult(ctx).Success("创建成功", nil)
@@ -109,8 +126,7 @@ func (r *MenuController) Store(ctx http.Context) http.Response {
 // @Router       /api/admin/menu/{id} [put]
 func (r *MenuController) Update(ctx http.Context) http.Response {
 	id := ctx.Request().Route("id")
-	menu := models.Menu{}
-	facades.Orm().Query().Model(&models.Menu{}).Where("id=?", id).Find(&menu)
+
 	var menuRequest requests.MenuRequest
 	errors, err := ctx.Request().ValidateRequest(&menuRequest)
 	if err != nil {
@@ -119,8 +135,23 @@ func (r *MenuController) Update(ctx http.Context) http.Response {
 	if errors != nil {
 		return httpfacade.NewResult(ctx).ValidError("", errors.All())
 	}
+	menu := map[string]interface{}{
+		"title":       menuRequest.Title,
+		"pid":         menuRequest.Pid,
+		"name":        menuRequest.Name,
+		"path":        menuRequest.Path,
+		`component`:   menuRequest.Component,
+		"icon":        menuRequest.Icon,
+		"menu_type":   menuRequest.MenuType,
+		"cacheable":   menuRequest.Cacheable,
+		"render_menu": menuRequest.RenderMenu,
+		"sort":        menuRequest.Sort,
+		"target":      menuRequest.Target,
+		"badge":       menuRequest.Badge,
+		"permission":  menuRequest.Permission,
+	}
 	//todo add request values
-	facades.Orm().Query().Model(&models.Menu{}).Where("id=?", id).Save(&menu)
+	facades.Orm().Query().Model(&models.Menu{}).Where("id=?", id).Update(&menu)
 	return httpfacade.NewResult(ctx).Success("修改成功", nil)
 }
 

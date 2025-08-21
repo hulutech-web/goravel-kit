@@ -1,76 +1,62 @@
+<script lang="ts" setup>
+import {ref} from 'vue'
+import { VxeGridListeners} from 'vxe-table'
+import usePermission from "@/composible/usePermission";
+
+const router = useRouter();
+const {gridOptions} = usePermission()
+const xGrid = ref()
+const serveApiUrl = import.meta.env.VITE_API_URL;
+
+// 编辑用户
+const editCourse = (row: any) => {
+  const grid = xGrid.value
+  grid.setEditRow(row)
+}
+
+
+
+
+const gridEvent: VxeGridListeners = {
+  proxyQuery() {
+    //设置column为cover的列，将其数据设置为数组，数组形式如下：[{name:'xx',url:'xx'}...]
+  },
+}
+
+
+const fileRef = ref(null)
+const selectFile = () => {
+  fileRef.value.showModal()
+  //通过xGrid获取到row的列，并且把cover数据改为
+}
+</script>
+
 <template>
-  <div>
-    <vxe-toolbar ref="toolbarRef" :buttons="toolbarButtons" @button-click="buttonClickEvent"></vxe-toolbar>
-    <vxe-table
-        border
-        ref="tableRef"
-        :edit-config="{mode: 'row', trigger: 'click'}"
-        :column-config="columnConfig"
-        :tree-config="treeConfig"
-        :data="persForms.permissions">
-      <vxe-column field="name" title="名称" :edit-render="{ name: 'AInput' }">
-      </vxe-column>
-      <vxe-column field="code" title="编码(与菜单【权限校验】一致)" :edit-render="{ name: 'AInput' }"></vxe-column>
-      <vxe-column field="type" title="类型" :edit-render="{ name: 'AInput' }"></vxe-column>
-      <vxe-column field="menu_id" title="菜单" :edit-render="{ name: 'AInput' }"></vxe-column>
-    </vxe-table>
+  <div class="demo-page-wrapper">
+    <vxe-grid
+        ref="xGrid"
+        v-bind="gridOptions"
+        v-on="gridEvent"
+    >
+      <template #action="{ row }">
+        <a-space>
+          <a-popconfirm
+              title="确认删除吗？"
+              ok-text="是"
+              cancel-text="否"
+              @confirm="delCourse(row)"
+          >
+            <a-button size="small" type="primary" danger>删除</a-button>
+          </a-popconfirm>
+          <a-button type="primary" size="small" @click="toChapter(row)">章节</a-button>
+        </a-space>
+      </template>
+    </vxe-grid>
   </div>
 </template>
 
-<script setup lang="ts">
-import Api from "@/api";
-import {VxeToolbarEvents, VxeToolbarPropTypes} from "vxe-pc-ui/types/components/toolbar";
-
-const treeConfig = reactive({
-  transform: true,
-  rowField: 'id',
-  parentField: 'parentId'
-})
-
-const persForms = ref({
-  permissions: []
-})
-const tableRef = ref(null)
-const perForm = ref({
-  id: null,
-  name: "",
-  code: "",
-  type: 1,
-  menu_id: null,
-})
-
-const toolbarButtons = ref<VxeToolbarPropTypes.Buttons>([
-  // {name: '新增', code: 'add', status: 'primary'},
-  // {name: '删除', code: 'del', status: 'error'},
-  {name: '保存', code: 'save', status: 'success'}
-])
-const buttonClickEvent: VxeToolbarEvents.ButtonClick = async (params) => {
-  console.log(params.$event.target)
-  switch (params.code) {
-    case "add":
-      persForms.value.permissions.push(perForm.value)
-      break;
-    case "del":
-      persForms.value.permissions = persForms.value.permissions.filter(i => i.id !== perForm.value.id)
-      break;
-    case "save":
-      //获取编辑过的数据
-      await Api.permissionController.update({id: id.value}, chapterForms.value)
-      tableRef.value.commitProxy('query')
-      break;
-  }
+<style scoped lang="less">
+.demo-page-wrapper {
+  padding: 20px;
 }
-const columnConfig = reactive({
-  resizable: true
-})
-const initPers = async () => {
-  // @ts-ignore
-  persForms.value.permissions = await Api.permissionController.list()
-  console.log( persForms.value.permissions)
-}
-initPers()
-</script>
-
-<style scoped>
-
 </style>

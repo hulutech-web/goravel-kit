@@ -17,7 +17,7 @@ type Menu struct {
 	Cacheable  bool   `json:"cacheable" gorm:"column:cacheable" form:"cacheable"`
 	RenderMenu bool   `json:"renderMenu" gorm:"column:render_menu" form:"renderMenu"` //遵循step-template的规范
 	Permission string `gorm:"column:permission;index" form:"permission" json:"permission"`
-	Sort       uint16 `json:"sort" gorm:"column:sort" form:"sort"`
+	Sort       int    `json:"sort" gorm:"column:sort" form:"sort"`
 	Target     string `json:"target" gorm:"column:target" form:"target"`
 	Badge      string `json:"badge" gorm:"column:badge" form:"badge"`
 	//设置外键 子级菜单

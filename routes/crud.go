@@ -10,9 +10,6 @@ import (
 func CRUD(app foundation.Application) {
 	router := app.MakeRoute()
 
-	//操作面板面板静态资源路由
-	router.Static("/dist/panel", "./public/dist/panel")
-
 	//操作面板
 	router.Get("/panel", func(ctx http.Context) http.Response {
 		return ctx.Response().View().Make("panel.html")

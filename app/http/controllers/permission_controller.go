@@ -93,7 +93,13 @@ func (r *PermissionController) Store(ctx http.Context) http.Response {
 	if errors != nil {
 		return httpfacade.NewResult(ctx).ValidError("", errors.All())
 	}
-	permission := models.Permission{}
+	permission := models.Permission{
+		Code:        permissionRequest.Code,
+		Name:        permissionRequest.Name,
+		Description: permissionRequest.Description,
+		Type:        permissionRequest.Type,
+		MenuID:      permissionRequest.MenuID,
+	}
 	//todo add request values
 	facades.Orm().Query().Model(&models.Permission{}).Create(&permission)
 	return httpfacade.NewResult(ctx).Success("创建成功", nil)
@@ -123,8 +129,15 @@ func (r *PermissionController) Update(ctx http.Context) http.Response {
 	if errors != nil {
 		return httpfacade.NewResult(ctx).ValidError("", errors.All())
 	}
+	permission = models.Permission{
+		Code:        permissionRequest.Code,
+		Name:        permissionRequest.Name,
+		Description: permissionRequest.Description,
+		Type:        permissionRequest.Type,
+		MenuID:      permissionRequest.MenuID,
+	}
 	//todo add request values
-	facades.Orm().Query().Model(&models.Permission{}).Where("id=?", id).Save(&permission)
+	facades.Orm().Query().Model(&models.Permission{}).Where("id=?", id).Update(&permission)
 	return httpfacade.NewResult(ctx).Success("修改成功", nil)
 }
 

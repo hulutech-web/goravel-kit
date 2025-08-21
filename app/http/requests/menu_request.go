@@ -1,4 +1,3 @@
-
 package requests
 
 import (
@@ -7,8 +6,7 @@ import (
 )
 
 type MenuRequest struct {
-
-	Pid string `json:"pid" form:"pid"`
+	Pid uint `json:"pid" form:"pid"`
 
 	Title string `json:"title" form:"title"`
 
@@ -22,18 +20,17 @@ type MenuRequest struct {
 
 	MenuType string `json:"menu_type" form:"menu_type"`
 
-	Cacheable string `json:"cacheable" form:"cacheable"`
+	Cacheable bool `json:"cacheable" form:"cacheable"`
 
-	RenderMenu string `json:"render_menu" form:"render_menu"`
+	RenderMenu bool `json:"renderMenu" form:"renderMenu"`
 
 	Permission string `json:"permission" form:"permission"`
 
-	Sort string `json:"sort" form:"sort"`
+	Sort int `json:"sort" form:"sort"`
 
 	Target string `json:"target" form:"target"`
 
 	Badge string `json:"badge" form:"badge"`
-
 }
 
 func (r *MenuRequest) Authorize(ctx http.Context) error {
@@ -43,7 +40,6 @@ func (r *MenuRequest) Authorize(ctx http.Context) error {
 func (r *MenuRequest) Filters(ctx http.Context) error {
 	return nil
 }
-
 
 func (r *MenuRequest) Rules(ctx http.Context) map[string]string {
 	return map[string]string{
@@ -73,7 +69,6 @@ func (r *MenuRequest) Rules(ctx http.Context) map[string]string {
 		"target": "",
 
 		"badge": "",
-
 	}
 }
 
