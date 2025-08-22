@@ -17,10 +17,6 @@ export default () => {
         showOverflow: true,
         keepSource: true,
         autoResize: true,
-
-        cellConfig: {
-            height: 110,
-        },
         expandConfig: {
             trigger: "row",
             showIcon: true,
@@ -101,10 +97,9 @@ export default () => {
         },
         pagerConfig: {
             enabled: true,
-            pageSize: 5,
+            pageSize: 10,
             pageSizes: [5, 10, 15, 20, 50, 100, 200, 500, 1000],
         },
-
         toolbarConfig: {
             buttons: [
                 // {code: "insert_actived", name: "快捷新增", status: "primary"},
@@ -160,7 +155,11 @@ export default () => {
                 field: "username",
                 title: "姓名",
                 sortable: true,
-                width:100,
+            },
+            {
+                field: "sex",
+                title: "性别",
+                sortable: true,
             },
             {
                 field: "avatar",
@@ -172,9 +171,16 @@ export default () => {
             {
                 field: "phone",
                 title: "电话",
-                //当为in是显示登录，out时显示退出
-                width:160,
                 sortable: true,
+            },
+            {
+                field: "last_login",
+                title: "最后一次登录",
+                sortable: true,
+            },
+            {
+                field: "action",
+                title: "操作",
             },
         ],
         importConfig: {},

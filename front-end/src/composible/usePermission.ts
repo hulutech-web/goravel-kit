@@ -98,7 +98,7 @@ export default () => {
         },
         pagerConfig: {
             enabled: true,
-            pageSize: 5,
+            pageSize: 10,
             pageSizes: [5, 10, 15, 20, 50, 100, 200, 500, 1000],
         },
 

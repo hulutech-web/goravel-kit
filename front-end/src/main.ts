@@ -13,7 +13,7 @@ import 'stepin/es/style';
 import '@/theme/index.less';
 import {AuthPlugin, IconfontPlugin} from '@/plugins';
 import {setupPicker} from "@/plugins/colorpicker"
-
+import {setupDirective} from "@/directive"
 const app = createApp(App);
 app.use(Antd)
 app.use(pinia);
@@ -29,4 +29,6 @@ app.config.errorHandler = function (err) {
 };
 setupVxe(app);
 setupPicker(app);
+// 自定义指令
+setupDirective(app)
 app.mount('#stepin-app');
