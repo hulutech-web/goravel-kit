@@ -108,6 +108,8 @@ func (r *MenuController) Store(ctx http.Context) http.Response {
 		"permission":  menuRequest.Permission,
 	}
 	//todo add request values
+	//清理一下redis缓存
+	facades.Cache().Store("redis").Flush()
 	facades.Orm().Query().Model(&models.Menu{}).Create(&menu)
 	return httpfacade.NewResult(ctx).Success("创建成功", nil)
 }
@@ -151,6 +153,7 @@ func (r *MenuController) Update(ctx http.Context) http.Response {
 		"permission":  menuRequest.Permission,
 	}
 	//todo add request values
+	facades.Cache().Store("redis").Flush()
 	facades.Orm().Query().Model(&models.Menu{}).Where("id=?", id).Update(&menu)
 	return httpfacade.NewResult(ctx).Success("修改成功", nil)
 }

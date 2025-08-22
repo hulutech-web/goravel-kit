@@ -9,6 +9,7 @@ type RuleField struct {
 	ColumnName string `json:"column_name" form:"column_name"`
 	RuleName   string `json:"rule_name" form:"rule_name"`
 	RuleTitle  string `json:"rule_title" form:"rule_title"`
+	RuleType   string `json:"rule_type" form:"rule_type"`
 	RuleValue  string `json:"rule_value" form:"rule_value"`
 }
 

@@ -48,5 +48,11 @@ router.Resource("fileCate", fileCateCtrl)
 router.Get("fileCate/list", fileCateCtrl.List)
 router.Get("fileCate/option", fileCateCtrl.Option)
 
+
+contractCtrl := controllers.NewContractController()
+router.Resource("contract", contractCtrl)
+router.Get("contract/list", contractCtrl.List)
+router.Get("contract/option", contractCtrl.Option)
+
 	})
 }

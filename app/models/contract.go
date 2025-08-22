@@ -3,10 +3,11 @@ package models
 import (
 	"bytes"
 	"fmt"
-	"github.com/goravel/framework/database/orm"
-	"github.com/goravel/framework/support/carbon"
 	html_template "html/template" // 导入模板包
 	"text/template"
+
+	"github.com/goravel/framework/database/orm"
+	"github.com/goravel/framework/support/carbon"
 )
 
 type Contract struct {
@@ -14,7 +15,7 @@ type Contract struct {
 	OrderID        uint            `gorm:"column:order_id;" form:"order_id" json:"order_id"` // 租赁合同关联订单
 	LandlordID     uint            `gorm:"column:landlord_id;not null" form:"landlord_id" json:"landlord_id"`
 	TenantID       uint            `gorm:"column:tenant_id;not null" form:"tenant_id" json:"tenant_id"` // 租赁合同需要租客
-	Type           int8            `gorm:"column:type;not null" form:"type" json:"type"`                // 1-代理合同 2-租赁合同
+	Type           string          `gorm:"column:type;not null" form:"type" json:"type"`                // 1-代理合同 2-租赁合同
 	Content        string          `gorm:"type:text;not null" form:"content" json:"content"`
 	TenantSign     string          `gorm:"column:tenant_sign" form:"tenant_sign" json:"tenant_sign"`
 	LandlordSign   string          `gorm:"column:landlord_sign" form:"landlord_sign" json:"landlord_sign"`
@@ -67,8 +68,8 @@ type ContractVariables struct {
 // 生成合同编号（规则：类型+日期+ID，如 ZL20240520001）
 func (c *Contract) GenerateContractNo() string {
 	prefix := "DL" // 代理合同前缀
-	if c.Type == 2 {
-		prefix = "ZL" // 租赁合同前缀
+	if c.Type == "租赁合同" {
+		prefix = "ZL"
 	}
 	date := carbon.Now().Format("Ymd")
 	return prefix + date + fmt.Sprintf("%03d", c.ID)

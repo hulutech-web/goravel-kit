@@ -2,11 +2,12 @@ package request
 
 import (
 	"fmt"
-	"github.com/goravel/framework/support/path"
 	"goravel/packages/goravel_crud/validator"
 	"os"
 	"strings"
 	"text/template"
+
+	"github.com/goravel/framework/support/path"
 )
 
 var tmpRequestStr = `
@@ -19,7 +20,7 @@ import (
 
 type {{.ModelName}}Request struct {
 {{range .Fields}}
-	{{TitleCaseFirst .ColumnName}} string ` + "`json:\"{{.ColumnName}}\" form:\"{{.ColumnName}}\"`" + `
+	{{TitleCaseFirst .ColumnName}} {{.RuleType}} ` + "`json:\"{{.ColumnName}}\" form:\"{{.ColumnName}}\"`" + `
 {{end}}
 }
 
@@ -84,12 +85,13 @@ func GenTemplate(modelName string, fields []validator.RuleField) string {
 			ColumnName string
 			RuleName   string
 			RuleValue  string
+			RuleType   string
 		}
 	}
 
 	data := TemplateData{
 		ModelName: modelName,
-		Fields:    make([]struct{ ColumnName, RuleName, RuleValue string }, len(fields)),
+		Fields:    make([]struct{ ColumnName, RuleName, RuleValue, RuleType string }, len(fields)),
 	}
 
 	for i, field := range fields {
@@ -97,10 +99,12 @@ func GenTemplate(modelName string, fields []validator.RuleField) string {
 			ColumnName string
 			RuleName   string
 			RuleValue  string
+			RuleType   string
 		}{
 			ColumnName: field.ColumnName,
 			RuleName:   field.RuleName,
 			RuleValue:  field.RuleValue,
+			RuleType:   field.RuleType,
 		}
 	}
 

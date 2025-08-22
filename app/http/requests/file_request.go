@@ -1,3 +1,4 @@
+
 package requests
 
 import (
@@ -6,25 +7,27 @@ import (
 )
 
 type FileRequest struct {
+
 	Cid uint `json:"cid" form:"cid"`
-
-	UserId string `json:"user_id" form:"user_id"`
-
-	Type string `json:"type" form:"type"`
-
-	Name string `json:"name" form:"name"`
-
-	Uri string `json:"uri" form:"uri"`
-
-	Ext string `json:"ext" form:"ext"`
-
-	Size int64 `json:"size" form:"size"`
 
 	Engine string `json:"engine" form:"engine"`
 
+	Ext string `json:"ext" form:"ext"`
+
+	Name string `json:"name" form:"name"`
+
 	Path string `json:"path" form:"path"`
 
+	Size int64 `json:"size" form:"size"`
+
 	TenantId uint `json:"tenant_id" form:"tenant_id"`
+
+	Type string `json:"type" form:"type"`
+
+	Uri string `json:"uri" form:"uri"`
+
+	UserId uint `json:"user_id" form:"user_id"`
+
 }
 
 func (r *FileRequest) Authorize(ctx http.Context) error {
@@ -35,28 +38,30 @@ func (r *FileRequest) Filters(ctx http.Context) error {
 	return nil
 }
 
+
 func (r *FileRequest) Rules(ctx http.Context) map[string]string {
 	return map[string]string{
 
 		"cid": "required",
 
-		"user_id": "required",
-
-		"type": "required",
-
-		"name": "required",
-
-		"uri": "required",
+		"engine": "required",
 
 		"ext": "required",
 
-		"size": "required",
-
-		"engine": "required",
+		"name": "required",
 
 		"path": "required",
 
-		"tenant_id": "",
+		"size": "required",
+
+		"tenant_id": "required",
+
+		"type": "string",
+
+		"uri": "string",
+
+		"user_id": "required",
+
 	}
 }
 

@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/golang/protobuf v1.5.4
-	github.com/goravel/framework v1.16.0
+	github.com/goravel/framework v1.16.1
 	github.com/goravel/gin v1.4.0
 	github.com/goravel/mysql v1.4.0
 	github.com/goravel/redis v1.4.0

@@ -10,13 +10,13 @@ type FileCateRequest struct {
 
 	Name string `json:"name" form:"name"`
 
-	Sort string `json:"sort" form:"sort"`
+	Pid uint `json:"pid" form:"pid"`
+
+	Sort int `json:"sort" form:"sort"`
+
+	TenantId uint `json:"tenant_id" form:"tenant_id"`
 
 	Type string `json:"type" form:"type"`
-
-	Pid string `json:"pid" form:"pid"`
-
-	TenantId string `json:"tenant_id" form:"tenant_id"`
 
 }
 
@@ -32,15 +32,15 @@ func (r *FileCateRequest) Filters(ctx http.Context) error {
 func (r *FileCateRequest) Rules(ctx http.Context) map[string]string {
 	return map[string]string{
 
-		"name": "required",
-
-		"sort": "required",
-
-		"type": "required",
+		"name": "string",
 
 		"pid": "required",
 
+		"sort": "required",
+
 		"tenant_id": "required",
+
+		"type": "string",
 
 	}
 }

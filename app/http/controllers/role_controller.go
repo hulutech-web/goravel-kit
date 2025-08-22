@@ -220,5 +220,6 @@ func (r *RoleController) SyncPermissions(ctx http.Context) http.Response {
 	if err != nil {
 		return httpfacade.NewResult(ctx).Error(http.StatusInternalServerError, "权限同步错误", err.Error())
 	}
+	facades.Cache().Store("redis").Flush()
 	return httpfacade.NewResult(ctx).Success("权限同步成功", nil)
 }
