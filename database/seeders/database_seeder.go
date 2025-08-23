@@ -15,7 +15,5 @@ func (s *DatabaseSeeder) Signature() string {
 
 // Run executes the seeder logic.
 func (s *DatabaseSeeder) Run() error {
-	return facades.Seeder().Call([]seeder.Seeder{
-		&TplSeeder{},
-	})
+	return facades.Seeder().Call([]seeder.Seeder{})
 }

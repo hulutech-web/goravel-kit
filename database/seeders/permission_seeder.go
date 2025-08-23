@@ -40,13 +40,15 @@ func (s *PermissionSeeder) Run() error {
 		{Name: "权限管理", Code: "system:auth:permission", Type: 1, MenuID: 5},
 		{Name: "用户管理", Code: "system:user", Type: 1, MenuID: 6},
 		{Name: "附件中心", Code: "system:netdisk", Type: 1, MenuID: 7},
+		{Name: "CRUD生成器", Code: "system:crud:index", Type: 1, MenuID: 8},
+		{Name: "字段设计", Code: "system:crud:column", Type: 1, MenuID: 9},
 	}
 	if err := facades.Orm().Query().Create(&sys_pers); err != nil {
 		return err
 	}
 
 	//5. 为角色分配权限
-	if _, err := facades.Orm().Query().Exec("INSERT INTO role_permissions (role_id, permission_id) VALUES (1, 1), (1, 2),(1, 3),(1, 4),(1, 5),(1, 6),(1, 7)"); err != nil {
+	if _, err := facades.Orm().Query().Exec("INSERT INTO role_permissions (role_id, permission_id) VALUES (1, 1), (1, 2),(1, 3),(1, 4),(1, 5),(1, 6),(1, 7),(1,8),(1,9)"); err != nil {
 		return err
 	}
 	return nil
