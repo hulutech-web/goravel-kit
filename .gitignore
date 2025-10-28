@@ -1,0 +1,6 @@
+front-end/node_modules
+/.idea
+.idea/
+/.git
+/.vscode
+/.env

@@ -1,0 +1,1637 @@
+definitions:
+  models.User:
+    type: object
+  requests.AuthCodeRequest:
+    properties:
+      code:
+        type: string
+    type: object
+  requests.FileCateRequest:
+    properties:
+      name:
+        type: string
+      pid:
+        type: string
+      sort:
+        type: string
+      tenant_id:
+        type: string
+      type:
+        type: string
+    type: object
+  requests.FileDelRequest:
+    properties:
+      del_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  requests.FileRequest:
+    properties:
+      cid:
+        type: integer
+      engine:
+        type: string
+      ext:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      size:
+        type: integer
+      tenant_id:
+        type: integer
+      type:
+        type: string
+      uri:
+        type: string
+      user_id:
+        type: string
+    type: object
+  requests.HouseRequest:
+    properties:
+      address:
+        type: string
+      albums:
+        type: string
+      area:
+        type: string
+      deposit:
+        type: string
+      description:
+        type: string
+      facilities:
+        type: string
+      header_img:
+        type: string
+      landlord_id:
+        type: string
+      location:
+        type: string
+      monthly_rent:
+        type: string
+      poster:
+        type: string
+      property_fee:
+        type: string
+      shopping:
+        type: string
+      status:
+        type: string
+      swipers:
+        type: string
+      title:
+        type: string
+      traffic:
+        type: string
+      video:
+        type: string
+    type: object
+  requests.LoginRequest:
+    properties:
+      account:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.MenuRequest:
+    properties:
+      badge:
+        type: string
+      cacheable:
+        type: string
+      component:
+        type: string
+      icon:
+        type: string
+      menu_type:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      permission:
+        type: string
+      pid:
+        type: string
+      render_menu:
+        type: string
+      sort:
+        type: string
+      target:
+        type: string
+      title:
+        type: string
+    type: object
+  requests.PermissionRequest:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      menu_id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  requests.RoleRequest:
+    properties:
+      is_admin:
+        type: string
+      is_disable:
+        type: string
+      label:
+        type: string
+      name:
+        type: string
+      remark:
+        type: string
+      sort:
+        type: string
+      tenant_id:
+        type: string
+    type: object
+  requests.SyncRolePerRequest:
+    properties:
+      formIDs:
+        items:
+          type: integer
+        type: array
+    type: object
+  requests.UserRequest:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      is_disable:
+        type: string
+      is_member:
+        type: string
+      is_multipoint:
+        type: string
+      openid:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      remark:
+        type: string
+      role_id:
+        type: string
+      salt:
+        type: string
+      sex:
+        type: string
+      tenant_id:
+        type: string
+      unionid:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/admin/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 后台登录
+      operationId: AuthLogin
+      parameters:
+      - description: 登录数据
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 后台登录
+      tags:
+      - AuthController
+  /api/admin/file:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: FileIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - FileController
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: FileStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: fileData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - FileController
+  /api/admin/file/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: FileDestroy
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - FileController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: FileUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: fileData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FileRequest'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - FileController
+  /api/admin/file/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: FileList
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - FileController
+  /api/admin/file/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: FileOption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - FileController
+  /api/admin/file_cate:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: FileCateIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - FileCateController
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: FileCateStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: file_cateData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FileCateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - FileCateController
+  /api/admin/file_cate/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: FileCateDestroy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - FileCateController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: FileCateUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: file_cateData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FileCateRequest'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - FileCateController
+  /api/admin/file_cate/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: FileCateList
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - FileCateController
+  /api/admin/file_cate/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: FileCateOption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - FileCateController
+  /api/admin/file_del_batch:
+    post:
+      consumes:
+      - application/json
+      description: 批量删除
+      operationId: FileDelBatch
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 删除数据
+        in: body
+        name: fileData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FileDelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除
+      tags:
+      - FileController
+  /api/admin/house:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: HouseStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: houseData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.HouseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - HouseController
+  /api/admin/house/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: HouseDestroy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - HouseController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: HouseUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: houseData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.HouseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - HouseController
+  /api/admin/house/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: HouseOption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - HouseController
+  /api/admin/menu:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: MenuIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - MenuController
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: MenuStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: menuData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.MenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - MenuController
+  /api/admin/menu/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: MenuDestroy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - MenuController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: MenuUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: menuData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.MenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - MenuController
+  /api/admin/menu/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: MenuList
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - MenuController
+  /api/admin/menu/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: MenuOption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - MenuController
+  /api/admin/menu/route:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: AuthMenu
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - AuthController
+  /api/admin/permission:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: PermissionStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: permissionData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.PermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - PermissionController
+  /api/admin/permission/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: PermissionDestroy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - PermissionController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: PermissionUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: permissionData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.PermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - PermissionController
+  /api/admin/permission/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: PermissionList
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - PermissionController
+  /api/admin/permission/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: PermissionOption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - PermissionController
+  /api/admin/role:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: RoleIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - RoleController
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: RoleStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: roleData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - RoleController
+  /api/admin/role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: RoleDestroy
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - RoleController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: RoleUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: roleData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RoleRequest'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - RoleController
+  /api/admin/role/{id}/permissions:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: RolePermissions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - RoleController
+  /api/admin/role/{id}/sync_permissions:
+    post:
+      consumes:
+      - application/json
+      description: 同步权限
+      operationId: RoleSyncPermissions
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: roleData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SyncRolePerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 同步权限
+      tags:
+      - RoleController
+  /api/admin/role/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: RoleList
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - RoleController
+  /api/admin/role/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: RoleOption
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - RoleController
+  /api/admin/user:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: UserIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - UserController
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      operationId: UserStore
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 新增
+      tags:
+      - UserController
+  /api/admin/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      operationId: UserDestroy
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除
+      tags:
+      - UserController
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      operationId: UserUpdate
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserRequest'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新
+      tags:
+      - UserController
+  /api/admin/user/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: UserList
+      parameters:
+      - description: username
+        in: query
+        name: username
+        type: string
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - UserController
+  /api/admin/user/option:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: UserOption
+      parameters:
+      - description: username
+        in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - UserController
+  /api/admin/user/own:
+    get:
+      consumes:
+      - application/json
+      description: 选项
+      operationId: UserOwn
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 选项
+      tags:
+      - UserController
+  /api/house:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: HouseIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - HouseController
+  /api/house/list:
+    get:
+      consumes:
+      - application/json
+      description: 列表查询
+      operationId: HouseList
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 列表查询
+      tags:
+      - HouseController
+  /api/mini/login:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      operationId: AuthMiniLogin
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: eventData
+        required: true
+        schema: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 登录
+      tags:
+      - AuthController
+  /api/mini/logout:
+    get:
+      consumes:
+      - application/json
+      description: 登录
+      operationId: AuthMiniLogout
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: eventData
+        required: true
+        schema: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 登录
+      tags:
+      - AuthController
+  /api/mini/openid:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      operationId: AuthMiniOpenid
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: code
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 登录
+      tags:
+      - AuthController
+  /api/mini/phone:
+    post:
+      consumes:
+      - application/json
+      description: 获取手机号
+      operationId: AuthMiniPhone
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: courseData
+        required: true
+        schema:
+          $ref: '#/definitions/requests.AuthCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取手机号
+      tags:
+      - AuthController
+  /api/mini/regist:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      operationId: AuthMiniRegist
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: 用户数据
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 登录
+      tags:
+      - AuthController
+  /api/permission:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      operationId: PermissionIndex
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        type: string
+      - description: name
+        in: query
+        name: name
+        type: string
+      - description: pageSize
+        in: query
+        name: pageSize
+        type: string
+      - description: currentPage
+        in: query
+        name: currentPage
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      - description: order
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页查询
+      tags:
+      - PermissionController
+swagger: "2.0"

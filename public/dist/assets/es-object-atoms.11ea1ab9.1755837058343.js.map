@@ -1,0 +1,1 @@
+{"version":3,"file":"es-object-atoms.11ea1ab9.1755837058343.js","sources":["../../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js"],"sourcesContent":["'use strict';\n\n/** @type {import('.')} */\nmodule.exports = Object;\n"],"names":["esObjectAtoms"],"mappings":"AAGA,IAAAA,EAAiB","x_google_ignoreList":[0]}

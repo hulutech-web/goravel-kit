@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同PDF动态生成系统</title>
+    <script src="assets/vue.global.js"></script>
+    <link rel="stylesheet" href="assets/fontawesome-free-7.0.0-web/css/all.min.css">
+    <script src="assets/monaco-editor/vs/loader.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 25px;
+            max-width: 1000px;
+            margin: 0 auto 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .app-container {
+            display: flex;
+            gap: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            min-height: 700px;
+        }
+
+        .panel {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .schema-editor {
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .form-preview {
+            background: white;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+            color: #2c3e50;
+        }
+
+        .panel-title i {
+            font-size: 1.6rem;
+        }
+
+        .panel-title h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 15px;
+            resize: none;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: no-wrap;
+        }
+
+        button {
+            padding: 14px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button.primary {
+            background: linear-gradient(to right, #3498db, #2980b9);
+        }
+
+        button.smallBtn {
+            background: linear-gradient(to right, #e67e22, #d35400);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            height: 36px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        button.secondary {
+            background: linear-gradient(to right, #7f8c8d, #95a5a6);
+        }
+
+        button.success {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+        }
+
+        button.danger {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .form-group h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.4rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .form-container:empty::before {
+            content: "请提供有效的JSON Schema来生成表单";
+            display: block;
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .data-preview {
+            resize: vertical;
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 250px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        .data-preview-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .error-status {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .info {
+            background: #cce5ff;
+            color: #004085;
+            border-left: 4px solid #007bff;
+        }
+
+        .template-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .editor-header {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        #templateEditor {
+            height: 400px;
+            width: 100%;
+            border: none;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .contract-preview {
+            flex: 1;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            margin-top: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.8;
+        }
+
+        .contract-preview h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 15px;
+        }
+
+        .contract-section {
+            margin-bottom: 30px;
+        }
+
+        .contract-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+
+        .contract-variable {
+            background: #fff8e1;
+            padding: 2px 5px;
+            border-radius: 4px;
+            border: 1px dashed #ffc107;
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            flex-wrap: wrap;
+        }
+
+        .signature-box {
+            width: 45%;
+            text-align: center;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .signature-line {
+            height: 1px;
+            background: #333;
+            margin: 40px 0 10px;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .template-actions button {
+            flex: none;
+            width: auto;
+            padding: 12px 25px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .pdf-preview {
+            width: 100%;
+            height: 600px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            flex-direction: column;
+        }
+
+        .pdf-preview img {
+            max-width: 100%;
+            max-height: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pdf-preview p {
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .download-btn {
+            margin-top: 25px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+        }
+
+        .template-syntax {
+            margin-top: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .template-syntax h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .syntax-example {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-top: 5px;
+        }
+
+        /* Monaco Editor 容器样式 */
+        .editor-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .controls select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .output-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2d2d2d;
+            border-radius: 4px;
+        }
+
+        .output-section textarea {
+            width: 100%;
+            min-height: 100px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .app-container {
+                flex-direction: column;
+            }
+
+            .schema-editor {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            .tab {
+                min-width: 150px;
+                padding: 10px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .signature-box {
+                width: 100%;
+            }
+
+            .panel-title h2 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-contract"></i> 合同PDF动态生成系统v1.0</h1>
+            <p>使用JSON Schema设计表单，编辑合同模板，动态生成PDF文件</p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab" @click="switchTab('design')" :class="{active: currentTab === 'design'}">
+                <i class="fas fa-drafting-compass"></i> 表单设计
+            </div>
+            <div class="tab" @click="switchTab('template')" :class="{active: currentTab === 'template'}">
+                <i class="fas fa-file-alt"></i> 模板编辑
+            </div>
+            <div class="tab" @click="switchTab('generate')" :class="{active: currentTab === 'generate'}">
+                <i class="fas fa-file-pdf"></i> 生成PDF
+            </div>
+        </div>
+
+        <!-- 表单设计标签页 -->
+        <div class="tab-content active" v-show="currentTab === 'design'">
+            <div class="app-container">
+                <div class="panel schema-editor">
+                    <div class="panel-title">
+                        <i class="fas fa-code"></i>
+                        <h2>Schema 编辑器</h2>
+                    </div>
+                    <div style="height:40px;float: right;">
+                        <button class="smallBtn" @click="formatStr(schemaJson)">
+                            <i class="fas fa-align-left"></i>
+                            格式化
+                        </button>
+                    </div>
+                    <textarea v-model="schemaJson" placeholder="在此输入您的JSON Schema..."
+                              style="font-size: 12px;resize: vertical;"></textarea>
+
+                    <div class="actions">
+                        <button @click="generateForm" class="primary">
+                            <i class="fas fa-play"></i> 生成表单
+                        </button>
+                        <button @click="loadExample" class="secondary">
+                            <i class="fas fa-lightbulb"></i> 加载示例
+                        </button>
+                        <button @click="resetForm" class="danger">
+                            <i class="fas fa-trash"></i> 重置
+                        </button>
+                        <button @click="submitProForm" class="success">
+                            <i class="fas fa-save"></i> 保存
+                        </button>
+                    </div>
+
+                    <div :class="['status', status.type]">
+                        {{ status.message }}
+                    </div>
+
+                    <div class="data-preview">
+                        <div class="data-preview-title">
+                            <i class="fas fa-database"></i>
+                            <h3>表单数据预览</h3>
+                        </div>
+                        <pre>{{ formData }}</pre>
+                    </div>
+                </div>
+
+                <div class="panel form-preview">
+                    <div class="panel-title">
+                        <i class="fas fa-window-maximize"></i>
+                        <h2>表单预览</h2>
+                    </div>
+
+                    <div class="form-container">
+                        <template v-if="formFields.length">
+                            <div v-for="(field, index) in formFields" :key="index" class="form-group">
+                                <h3>{{ field.title }}</h3>
+                                <p v-if="field.description" class="description">{{ field.description }}</p>
+
+                                <!-- 字符串类型字段 -->
+                                <template v-if="field.type === 'string'">
+                                    <!-- 文本域 -->
+                                    <div v-if="field.format === 'textarea'">
+                                        <label :for="field.key">{{ field.title }}<span
+                                                v-if="field.required"> *</span></label>
+                                        <textarea
+                                                v-model="formData[field.key]"
+                                                :placeholder="field.placeholder"
+                                                :rows="field.rows || 4"
+                                                :required="field.required"
+                                        ></textarea>
+                                    </div>
+
+                                    <!-- 单选按钮组 -->
+                                    <div v-else-if="field.radioOptions">
+                                        <label>{{ field.title }}<span v-if="field.required"> *</span></label>
+                                        <div class="radio-group">
+                                            <label v-for="(option, i) in field.radioOptions" :key="i">
+                                                <input
+                                                        type="radio"
+                                                        :name="field.key"
+                                                        :value="option.value"
+                                                        v-model="formData[field.key]"
+                                                        :required="field.required"
+                                                >
+                                                {{ option.label }}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- 下拉选择 -->
+                                    <div v-else-if="field.enum">
+                                        <label :for="field.key">{{ field.title }}<span
+                                                v-if="field.required"> *</span></label>
+                                        <select v-model="formData[field.key]" :required="field.required">
+                                            <option v-for="(option, i) in field.enum" :key="i" :value="option">
+                                                {{ option }}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- 普通文本输入 -->
+                                    <div v-else>
+                                        <label :for="field.key">{{ field.title }}<span
+                                                v-if="field.required"> *</span></label>
+                                        <input
+                                                type="text"
+                                                v-model="formData[field.key]"
+                                                :placeholder="field.placeholder"
+                                                :required="field.required"
+                                        >
+                                    </div>
+                                </template>
+
+                                <!-- 数字类型字段 -->
+                                <div v-else-if="field.type === 'number'">
+                                    <label :for="field.key">{{ field.title }}<span
+                                            v-if="field.required"> *</span></label>
+                                    <input
+                                            type="number"
+                                            v-model.number="formData[field.key]"
+                                            :placeholder="field.placeholder"
+                                            :min="field.minimum"
+                                            :max="field.maximum"
+                                            :required="field.required"
+                                    >
+                                </div>
+
+                                <!-- 布尔类型字段 -->
+                                <div v-else-if="field.type === 'boolean'">
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" :id="field.key" v-model="formData[field.key]">
+                                        <label :for="field.key">{{ field.title }}</label>
+                                    </div>
+                                </div>
+
+                                <!-- 日期类型字段 -->
+                                <div v-else-if="field.type === 'date'">
+                                    <label :for="field.key">{{ field.title }}<span
+                                            v-if="field.required"> *</span></label>
+                                    <input
+                                            type="date"
+                                            v-model="formData[field.key]"
+                                            :required="field.required"
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button class="success" @click="saveFormData">
+                                    <i class="fas fa-save"></i> 保存表单数据
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模板编辑标签页 -->
+        <div class="tab-content" :class="{active: currentTab === 'template'}" v-show="currentTab === 'template'">
+            <div class="app-container">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-edit"></i>
+                        <h2>合同模板编辑器</h2>
+                        <i class="fas fa-warning"></i>
+                        <span>不支持flex布局，谨慎使用</span>
+                    </div>
+                    <div class="template-syntax">
+                        <h4><i class="fas fa-info-circle"></i> 模板语法说明</h4>
+                        <p>使用双中括号 <code>[[ ]]</code> 作为模板变量标记：</p>
+                        <div class="syntax-example">
+                            &lt;p&gt;合同编号：[[.contractNo]]&lt;/p&gt;<br>
+                            &lt;p&gt;签署日期：[[.signDate]]&lt;/p&gt;
+                        </div>
+                        <p>在后端处理时，这些标记会被转换为Golang的标准模板语法 <code>{{ }}</code></p>
+                    </div>
+                    <div class="template-container">
+                        <div>
+                            <div class="editor-header">
+                                <div>合同模板编辑 (使用[[ ]]作为Golang模板语法)</div>
+                                <div>可用变量: {{ availableVariables.join(', ') }}</div>
+                            </div>
+                            <div class="controls">
+                                <label for="theme" style="width:100px;">主题:</label>
+                                <select id="theme" v-model="theme" style="width:150px;">
+                                    <option value="vs">明亮</option>
+                                    <option value="vs-dark">暗黑</option>
+                                    <option value="hc-black">高对比度</option>
+                                </select>
+
+                                <button @click="formatCode" class="smallBtn">
+                                    <i class="fas fa-align-left"></i> 格式化代码
+                                </button>
+                                <button @click="resetEditor" class="smallBtn">
+                                    <i class="fas fa-redo"></i> 重置内容
+                                </button>
+                                <div class="status" style="min-width:140px;font-size: 12px;color:orangered;">
+                                    状态: {{ editorStatus }}
+                                </div>
+                            </div>
+
+                            <!-- Monaco Editor 容器 -->
+                            <div class="editor-container" id="editorContainer"></div>
+
+
+                        </div>
+
+                        <div class="template-actions">
+                            <button class="primary" @click="updateTemplatePreview">
+                                <i class="fas fa-sync"></i> 更新预览
+                            </button>
+                            <button class="success" @click="saveHTML">
+                                <i class="fas fa-save"></i> 保存模板
+                            </button>
+                            <button class="secondary" @click="loadExample">
+                                <i class="fas fa-file-alt"></i> 加载示例
+                            </button>
+                        </div>
+                        <div class="contract-preview" v-html="compiledTemplate"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生成PDF标签页 -->
+        <div class="tab-content" :class="{active: currentTab === 'generate'}" v-show="currentTab === 'generate'">
+            <div class="app-container">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-file-pdf"></i>
+                        <h2>PDF生成</h2>
+                    </div>
+
+                    <div class="status info">
+                        <i class="fas fa-info-circle"></i> 表单数据已准备就绪，点击下方按钮生成PDF
+                    </div>
+
+                    <div class="actions">
+                        <button class="success" @click="generatePDF">
+                            <i class="fas fa-cogs"></i> 生成PDF合同
+                        </button>
+                    </div>
+
+                    <div class="pdf-preview" v-if="pdfGenerated">
+                        <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="PDF Preview">
+                        <p>合同PDF生成成功！</p>
+                    </div>
+                    <div class="data-preview">
+                        <div class="data-preview-title">
+                            <i class="fas fa-code"></i>
+                            <h3>最终合同HTML</h3>
+                        </div>
+                        <pre>{{ compiledTemplate }}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== Monaco Editor 配置 ==========
+    const monacoBaseUrl = 'assets/monaco-editor/vs';
+
+    // 1. 禁用不需要的功能
+    window.MONACOEDITOR_DISABLE_SOURCE_MAP = true;
+
+    // 2. 配置 AMD loader
+    require.config({
+        paths: {
+            'vs': monacoBaseUrl,
+            'vs/base/worker/workerMain': `${monacoBaseUrl}/base/worker/workerMain`
+        },
+        ignoreDuplicateModules: ['vs/editor/editor.main'],
+        // 防止 Monaco 尝试使用 web workers 的 define
+        amd: {
+            define: null
+        }
+    });
+
+    // 3. 配置 Worker 环境
+    window.MonacoEnvironment = {
+        getWorker: function (moduleId, label) {
+            // 创建 worker 的 Blob URL 方案
+            const getWorkerUrl = (workerId, label) => {
+                return URL.createObjectURL(new Blob([
+                    `importScripts('${monacoBaseUrl}/base/worker/workerMain.js');`,
+                    `monaco.languages.${label} && monaco.languages.${label}.getWorker()`
+                ].join('\n'), {type: 'application/javascript'}));
+            };
+
+            const workerMap = {
+                'html': `${monacoBaseUrl}/language/html/htmlWorker.js`,
+                'css': `${monacoBaseUrl}/language/css/cssWorker.js`,
+                'javascript': `${monacoBaseUrl}/language/typescript/ts.worker.js`,
+
+                'typescript': `${monacoBaseUrl}/language/typescript/ts.worker.js`,
+                'json': `${monacoBaseUrl}/language/json/json.worker.js`,
+                'editor': `${monacoBaseUrl}/editor/editor.main.js`
+            };
+
+            if (label === 'json') {
+                label = 'javascript';
+            }
+// 3. 修复未闭合的HTML标签
+            if (marker.message.includes("未闭合的 <") && marker.message.includes("> 标签")) {
+                const tagMatch = marker.message.match(/未闭合的 <([a-z][a-z0-9]*)>/);
+                if (tagMatch) {
+                    const tagName = tagMatch[1];
+                    actions.push({
+                        title: `添加闭合标签 </${tagName}>`,
+                        kind: monaco.languages.CodeActionKind.QuickFix,
+                        edit: {
+                            edits: [{
+                                resource: model.uri,
+                                edit: {
+                                    range: {
+                                        startLineNumber: marker.range.endLineNumber,
+                                        startColumn: marker.range.endColumn,
+                                        endLineNumber: marker.range.endLineNumber,
+                                        endColumn: marker.range.endColumn
+                                    },
+                                    text: `</${tagName}>`
+                                }
+                            }]
+                        },
+                        diagnostics: [marker],
+                        isPreferred: true
+                    });
+                }
+            }
+            // 4. 修复不匹配的闭合标签
+            if (marker.message.includes("不匹配的闭合标签 </")) {
+                const tagMatch = marker.message.match(/不匹配的闭合标签 <\/([a-z][a-z0-9]*)>/);
+                if (tagMatch) {
+                    const tagName = tagMatch[1];
+                    actions.push({
+                        title: `将 </${tagName}> 更改为正确的闭合标签`,
+                        kind: monaco.languages.CodeActionKind.QuickFix,
+                        command: {
+                            id: 'editor.action.triggerSuggest',
+                            title: '选择正确的标签名'
+                        },
+                        diagnostics: [marker]
+                    });
+                }
+            }
+
+            // 5. 修复未闭合的属性引号
+            if (marker.message.includes("未闭合的属性引号")) {
+                const quoteChar = marker.message.includes('"') ? '"' : "'";
+                actions.push({
+                    title: `添加闭合引号 ${quoteChar}`,
+                    kind: monaco.languages.CodeActionKind.QuickFix,
+                    edit: {
+                        edits: [{
+                            resource: model.uri,
+                            edit: {
+                                range: {
+                                    startLineNumber: marker.range.endLineNumber,
+                                    startColumn: marker.range.endColumn,
+                                    endLineNumber: marker.range.endLineNumber,
+                                    endColumn: marker.range.endColumn
+                                },
+                                text: quoteChar
+                            }
+                        }]
+                    },
+                    diagnostics: [marker],
+                    isPreferred: true
+                });
+            }
+
+            const workerUrl = workerMap[label] || workerMap.editor;
+            console.log(`Loading worker for ${label}: ${workerUrl}`);
+
+            // 使用 Blob URL 方案解决路径问题
+            return new Worker(getWorkerUrl(moduleId, label));
+        },
+
+        // 禁用 Trusted Types
+        createTrustedTypesPolicy: () => undefined
+    };
+
+
+    const {createApp, ref, reactive, computed, watch, onMounted, nextTick} = Vue;
+
+    createApp({
+        setup() {
+            const editorInitialized = ref(false);
+            // 响应式数据
+            const currentTab = ref('design');
+            const schemaJson = ref("");
+            const formFields = ref([]);
+            const formData = ref({});
+            const status = reactive({
+                type: 'success',
+                message: '已加载示例Schema，点击"生成表单"按钮创建表单'
+            });
+            const contractTemplate = ref('');
+            const compiledTemplate = ref('');
+            const availableVariables = ref([]);
+            const pdfGenerated = ref(false);
+
+            // Monaco Editor相关
+            const editorContent = ref(contractTemplate.value || `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同模板</title>
+    <style>
+        body {
+            font-family: 'SimSun', serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>合同模板</h1>
+    <p>合同编号：[[.contractNo]]</p>
+    <p>签署日期：[[.signDate]]</p>
+</body>
+</html>`);
+            const theme = ref('vs-dark');
+            const editorStatus = ref('初始化中...');
+            let editor = null;
+            let isSyncing = false;
+            /*编辑器部分*/
+            const initEditor = () => {
+                // 如果已有编辑器实例，先销毁
+                if (editor) {
+                    editor.dispose();
+                    editor = null;
+                }
+
+
+                editorInitialized.value = true;
+                // 加载 Monaco 编辑器
+                require(['vs/editor/editor.main'], function () {
+                    try {
+                        // 提前检查容器元素是否存在
+                        const editorContainer = document.getElementById('editorContainer');
+                        if (!editorContainer) {
+                            editorStatus.value = '错误: 找不到编辑器容器元素 (#editorContainer)';
+                            console.error('编辑器初始化失败: 找不到容器元素');
+                            return;
+                        }
+
+                        // 检查是否已经存在编辑器实例
+                        if (editorContainer._editorInstance) {
+                            editorStatus.value = '警告: 编辑器已经初始化';
+                            return;
+                        }
+                        // 直接使用 monaco 对象
+                        editor = monaco.editor.create(editorContainer, {
+                            value: editorContent.value,
+                            language: 'html',
+                            theme: theme.value,
+                            automaticLayout: true,
+                            minimap: {enabled: true},
+                            fontSize: 14,
+                            lineNumbers: 'on',
+                            roundedSelection: true,
+                            scrollBeyondLastLine: false,
+                            readOnly: false,
+                            contextmenu: true,
+                            wordWrap: 'on',
+                            wrappingIndent: 'indent',
+                            glyphMargin: true,
+
+                            // 格式化控制配置
+                            formatOnPaste: false,
+                            formatOnType: false,
+                            wordWrapColumn: 800,
+                            wordWrap: 'wordWrapColumn',
+
+                            // HTML语言特定配置
+                            'html.format.enable': true,
+                            'html.format.wrapLineLength': 0, // 完全禁用基于长度的换行
+                            'html.format.wrapAttributes': 'preserve', // 保持属性原有格式
+                            'html.format.maxPreserveNewLines': 1,
+                            'html.format.unformatted': 'td,th,span,a,img,code,pre', // 不对这些标签格式化
+                            'html.format.contentUnformatted': 'pre,code,textarea',
+                            'html.format.indentInnerHtml': false,
+                            'html.format.extraLiners': '' // 不在任何标签前后添加空行
+                        });
+                        // 覆盖默认的HTML格式化规则
+                        monaco.languages.html.htmlDefaults.setOptions({
+                            format: {
+                                tabSize: 4,
+                                insertSpaces: true,
+                                wrapLineLength: 0,
+                                unformatted: 'td,th,span,a,img,code,pre',
+                                contentUnformatted: 'pre,code,textarea',
+                                preserveNewLines: true,
+                                maxPreserveNewLines: 1,
+                                indentInnerHtml: false,
+                                endWithNewline: false,
+                                wrapAttributes: 'preserve'
+                            }
+                        });
+
+                        // 错误标记装饰
+                        let errorDecorations = [];
+                        // 自定义HTML验证
+
+                        // 自定义HTML验证器
+                        function validateHTML(content) {
+                            const errors = [];
+                            const tagStack = [];
+                            const lines = content.split('\n');
+                            const selfClosingTags = new Set(['img','br','hr','input','meta','link','col']);
+                            const tableTags = new Set(['table','tr','td','th','thead','tbody','tfoot']);
+
+                            // 改进的正则，正确处理多行属性
+                            const htmlTagRegex = /<(\/?)\s*([a-z][a-z0-9-]*)([\s\S]*?)(\/?)>/gi;
+
+                            lines.forEach((line, lineIndex) => {
+                                let match;
+                                while ((match = htmlTagRegex.exec(line)) !== null) {
+                                    const [fullMatch, isClosing, tagName, attributes, isSelfClosing] = match;
+                                    const lowerTagName = tagName.toLowerCase();
+
+                                    // 跳过特殊标签
+                                    if (lowerTagName.startsWith('!')) continue;
+
+                                    // 处理自闭合标签
+                                    const isActuallySelfClosing = isSelfClosing === '/' ||
+                                        selfClosingTags.has(lowerTagName) ||
+                                        attributes.trim().endsWith('/');
+
+                                    if (!isClosing && !isActuallySelfClosing) {
+                                        tagStack.push({
+                                            tag: lowerTagName,
+                                            line: lineIndex + 1,
+                                            column: match.index + 1,
+                                            isTableTag: tableTags.has(lowerTagName)
+                                        });
+                                    } else if (isClosing) {
+                                        // 特殊处理表格标签
+                                        if (tableTags.has(lowerTagName)) {
+                                            let foundMatch = false;
+                                            // 从栈顶向下查找最近的表格标签
+                                            for (let i = tagStack.length - 1; i >= 0; i--) {
+                                                if (tagStack[i].tag === lowerTagName) {
+                                                    tagStack.splice(i, 1);
+                                                    foundMatch = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!foundMatch && !isSelfClosing) {
+                                                // 忽略表格单元格的闭合标签错误
+                                                if (!lowerTagName.match(/td|th/)) {
+                                                    errors.push({
+                                                        line: lineIndex + 1,
+                                                        column: match.index + 1,
+                                                        message: `不匹配的表格闭合标签 </${lowerTagName}>`
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        // 普通标签处理
+                                        else if (tagStack.length === 0 || tagStack[tagStack.length-1].tag !== lowerTagName) {
+                                            errors.push({
+                                                line: lineIndex + 1,
+                                                column: match.index + 1,
+                                                message: `不匹配的闭合标签 </${lowerTagName}>`
+                                            });
+                                        } else {
+                                            tagStack.pop();
+                                        }
+                                    }
+                                }
+                            });
+
+                            // 更新错误标记（忽略表格相关未闭合标签）
+                            errorDecorations = editor.deltaDecorations(errorDecorations, errors.map(error => ({
+                                range: new monaco.Range(
+                                    error.line, error.column,
+                                    error.line, error.column + 1
+                                ),
+                                options: {
+                                    className: 'errorUnderline',
+                                    glyphMarginClassName: 'errorGlyph',
+                                    hoverMessage: { value: error.message },
+                                    overviewRuler: {
+                                        color: 'red',
+                                        position: monaco.editor.OverviewRulerLane.Right
+                                    }
+                                }
+                            })));
+
+                            editorStatus.value = errors.length > 0
+                                ? `发现 ${errors.length} 个语法错误`
+                                : '代码验证通过';
+                        }
+
+
+                        editorContainer._editorInstance = editor;
+
+                        // 配置HTML语言特性
+                        monaco.languages.html.htmlDefaults.setOptions({
+                            suggest: {
+                                html5: true,
+                                angular1: false,
+                                ionic: false
+                            },
+                            validate: {
+                                scripts: true,
+                                styles: true
+                            }
+                        });
+
+                        // 内容变化时验证
+                        editor.onDidChangeModelContent(() => {
+                            console.log('内容变化')
+                            validateHTML(editor.getValue());
+                        });
+                        // 初始验证
+                        validateHTML(editor.getValue());
+
+                        // 添加错误样式
+                        const style = document.createElement('style');
+                        style.textContent = `
+            .errorUnderline {
+                border-bottom: 2px dashed red;
+                position: relative;
+            }
+            .errorGlyph {
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12"><circle cx="6" cy="6" r="5" fill="red"/><text x="6" y="8" font-size="8" text-anchor="middle" fill="white">!</text></svg>') no-repeat center center;
+            }
+            .monaco-editor .overviewRuler .error {
+                background: rgba(255, 0, 0, 0.7);
+            }
+        `;
+                        document.head.appendChild(style);
+
+                        // 添加自定义模板语法高亮
+                        monaco.languages.register({id: 'contract-template'});
+                        monaco.languages.setMonarchTokensProvider('contract-template', {
+                            defaultToken: '',
+                            tokenPostfix: '.html',
+                            brackets: [
+                                {open: '[[', close: ']]', token: 'delimiter.square'}
+                            ],
+                            tokenizer: {
+                                root: [
+                                    [/\[\[/, {token: 'delimiter.square', next: '@template'}],
+                                    [/\]\]/, {token: 'delimiter.square', next: '@pop'}],
+                                    {include: '@html'}
+                                ],
+                                template: [
+                                    [/[^\]]+/, 'template.variable'],
+                                    [/\]\]/, {token: 'delimiter.square', next: '@pop'}]
+                                ],
+                                html: [
+                                    [/<!DOCTYPE/, 'metatag.html', '@doctype'],
+                                    [/<!--/, 'comment.html', '@comment'],
+                                    [/(<)(\w+)(\/>)/, ['delimiter.html', 'tag.html', 'delimiter.html']],
+                                    [/(<)(\w+)/, ['delimiter.html', {token: 'tag.html', next: '@tag'}]],
+                                    [/(<\/)(\w+)/, ['delimiter.html', {token: 'tag.html', next: '@tag'}]],
+                                    [/[ \t\r\n]+/, 'white'],
+                                    [/[^<]+/, 'content.html']
+                                ],
+                                doctype: [
+                                    [/[^>]+/, 'metatag.content.html'],
+                                    [/>/, 'metatag.html', '@pop']
+                                ],
+                                comment: [
+                                    [/-->/, 'comment.html', '@pop'],
+                                    [/[^-]+/, 'comment.content.html'],
+                                    [/./, 'comment.content.html']
+                                ],
+                                tag: [
+                                    [/[ \t\r\n]+/, 'white'],
+                                    [/(\/?>)/, {token: 'delimiter.html', next: '@pop'}],
+                                    [/(\w+)(\s*=\s*)("[^"]*"|'[^']*')/, ['attribute.name.html', 'delimiter.html', 'attribute.value.html']],
+                                    [/\w+/, 'attribute.name.html'],
+                                    [/=/, 'delimiter.html'],
+                                    [/"([^"]*)"/, 'attribute.value.html'],
+                                    [/'([^']*)'/, 'attribute.value.html']
+                                ]
+                            }
+                        });
+
+                        // 内容变化监听
+                        editor.onDidChangeModelContent(() => {
+                            if (!isSyncing) {
+                                isSyncing = true;
+                                const newValue = editor.getValue();
+                                editorContent.value = newValue;
+                                contractTemplate.value = newValue;
+                                setTimeout(() => {
+                                    isSyncing = false;
+                                    updateTemplatePreview();
+                                }, 100);
+                            }
+                        });
+                        editorInitialized.value = true;
+                        // 保存快捷键
+                        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+                            saveHTML();
+                            editorStatus.value = '模板已保存 (' + new Date().toLocaleTimeString() + ')';
+                        });
+
+                        editorStatus.value = '编辑器已就绪';
+                    } catch (error) {
+                        editorStatus.value = `编辑器初始化失败: ${error.message}`;
+                        console.error('编辑器初始化错误:', error);
+                    }
+                });
+            };
+
+            // Tab 切换方法
+            const switchTab = (tabName) => {
+                currentTab.value = tabName;
+
+                // 使用 nextTick 确保 DOM 更新完成
+                nextTick(() => {
+                    // 当切换到模板编辑 Tab 时
+                    if (tabName === 'template') {
+                        if (editor) {
+                            // 重新布局编辑器
+                            editor.layout();
+
+                            // 如果编辑器内容与当前值不同步，更新编辑器内容
+                            if (editor.getValue() !== editorContent.value) {
+                                editor.setValue(editorContent.value);
+                            }
+                        } else {
+                            // 初始化编辑器
+                            initEditor();
+                        }
+                    }
+                });
+            };
+
+            // 在DOM挂载完成后初始化编辑器
+            onMounted(() => {
+                // 添加加载状态提示
+                editorStatus.value = '正在初始化编辑器...';
+
+                // 延迟初始化确保容器完全加载
+                const initInterval = setInterval(() => {
+                    if (document.getElementById('editorContainer')) {
+                        clearInterval(initInterval);
+                        initEditor();
+                    } else {
+                        editorStatus.value = '正在等待编辑器容器准备就绪...';
+                    }
+                }, 100);
+
+                // 设置超时
+                setTimeout(() => {
+                    if (!document.getElementById('editorContainer')) {
+                        clearInterval(initInterval);
+                        editorStatus.value = '错误: 编辑器容器加载超时';
+                        console.error('编辑器容器加载超时');
+                    }
+                }, 5000);
+            });
+
+            // 监听主题变化
+            watch(theme, (newTheme) => {
+                if (editor) {
+                    monaco.editor.setTheme(newTheme);
+                    editorStatus.value = `主题已切换为: ${newTheme}`;
+                }
+            });
+
+            // 监听内容变化，同步到编辑器
+            watch(editorContent, (newContent) => {
+                if (editor && !isSyncing && editor.getValue() !== newContent) {
+                    isSyncing = true;
+                    editor.setValue(newContent);
+                    setTimeout(() => isSyncing = false, 100);
+                }
+            });
+
+            // 格式化函数（保留原有格式）
+            const formatCode = () => {
+                if (editor) {
+                    const position = editor.getPosition();
+
+                    editor.getAction('editor.action.formatDocument').run()
+                        .then(() => {
+                            if (position) {
+                                editor.setPosition(position);
+                                editor.revealPositionInCenter(position);
+                            }
+                            editorStatus.value = '代码已格式化 (' + new Date().toLocaleTimeString() + ')';
+                        })
+                        .catch(err => {
+                            editorStatus.value = `格式化失败: ${err.message}`;
+                            console.error('格式化错误:', err);
+                        });
+                }
+            };
+            // 重置编辑器内容
+            const resetEditor = () => {
+                editorContent.value = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同模板</title>
+    <style>
+        body {
+            font-family: 'SimSun', serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>合同模板</h1>
+    <p>合同编号：[[.contractNo]]</p>
+    <p>签署日期：[[.signDate]]</p>
+</body>
+</html>`;
+                editorStatus.value = '内容已重置为默认模板';
+            };
+
+            // 窗口大小变化时调整编辑器
+            window.addEventListener('resize', () => {
+                if (editor) {
+                    setTimeout(() => editor.layout(), 100);
+                }
+            });
+
+            // 其他方法保持不变...
+            const generateForm = () => {
+                try {
+                    const schema = JSON.parse(schemaJson.value);
+                    console.log("schema", schema)
+
+                    if (!schema || schema.type !== 'object' || !schema.properties) {
+                        throw new Error('无效的JSON Schema。根类型必须是object且包含properties属性。');
+                    }
+
+                    formFields.value = Object.entries(schema.properties).map(([key, field]) => {
+                        return {
+                            key,
+                            ...field,
+                            required: (schema.required || []).includes(key)
+                        };
+                    });
+
+                    formData.value = {};
+                    formFields.value.forEach(field => {
+                        if (field.type === 'array') {
+                            formData.value[field.key] = [];
+                        } else if (field.type === 'object') {
+                            formData.value[field.key] = {};
+                            Object.keys(field.properties).forEach(prop => {
+                                formData.value[field.key][prop] = field.properties[prop].default || '';
+                            });
+                        } else {
+                            formData.value[field.key] = field.default || '';
+
+                            if (field.format === 'date' && !field.default) {
+                                const today = new Date();
+                                formData.value[field.key] = today.toISOString().split('T')[0];
+                            }
+                        }
+                    });
+
+                    if (formData.value.quantity && formData.value.unitPrice) {
+                        formData.value.totalAmount = formData.value.quantity * formData.value.unitPrice;
+                    }
+
+                    status.type = 'success';
+                    status.message = `表单生成成功！共 ${formFields.value.length} 个字段`;
+
+                    availableVariables.value = Object.keys(schema.properties);
+                    updateTemplatePreview();
+                } catch (error) {
+                    status.type = 'error-status';
+                    status.message = `错误: ${error.message}`;
+                    formFields.value = [];
+                }
+            };
+
+            const id = ref(null);
+            const loadExample = async () => {
+                await fetch(`${window.pdf_prefix}/${window.getDefaultTemplate}`).then(r => {
+                    return r.json()
+                }).then(({data}) => {
+                    schemaJson.value = data.params;
+                    contractTemplate.value = data.html;
+                    editorContent.value = data.html;
+                    id.value = data.id;
+                    status.type = 'success';
+                    status.message = '示例Schema已加载，点击"生成表单"按钮创建表单';
+                    generateForm();
+                })
+            };
+
+            const resetForm = () => {
+                schemaJson.value = '';
+                formFields.value = [];
+                formData.value = {};
+                status.type = 'success';
+                status.message = '表单已重置，请输入新的JSON Schema';
+            };
+
+            const saveFormData = async () => {
+                console.log('表单数据已保存:', formData.value);
+                status.type = 'success';
+                status.message = '表单数据已保存！';
+            };
+
+            const updateTemplatePreview = () => {
+                try {
+                    // 确保获取编辑器最新内容
+                    if (editor) {
+                        contractTemplate.value = editor.getValue();
+                    }
+                    let result = contractTemplate.value;
+                    Object.keys(formData.value).forEach(key => {
+                        const regex = new RegExp(`\\[\\[\\.${key}\\]\\]`, 'g');
+                        const value = formData.value[key] || '';
+                        result = result.replace(regex, value);
+                    });
+                    compiledTemplate.value = result;
+                } catch (error) {
+                    compiledTemplate.value = `<div class="error">模板渲染错误: ${error.message}</div>`;
+                }
+            };
+
+            const saveHTML = async () => {
+                console.log('合同模板已保存:', compiledTemplate.value);
+                const requestData = {
+                    html: compiledTemplate.value
+                };
+                console.log('Request Body:', requestData);
+                await fetch(`${window.pdf_prefix}/${window.saveHTML}/${id.value}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                status.message = "保存成功";
+            };
+
+            const loadTemplateExample = () => {
+                contractTemplate.value = templateExample;
+                updateTemplatePreview();
+                status.type = 'success';
+                status.message = '已加载合同模板示例';
+            };
+
+            const generatePDF = async () => {
+                try {
+                    pdfGenerated.value = true;
+
+                    const response = await fetch(`${window.pdf_prefix}/${window.generate}/${id.value}`);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const pdfBlob = await response.blob();
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = pdfUrl;
+                    let timestamp = new Date().getTime();
+                    downloadLink.download = `${timestamp}.pdf`;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(pdfUrl);
+
+                    status.value = {
+                        type: 'success',
+                        message: 'PDF生成成功，已开始下载'
+                    };
+                    pdfGenerated.value = true;
+
+                } catch (error) {
+                    console.error('生成PDF出错:', error);
+                    status.value = {
+                        type: 'error',
+                        message: error.message || '生成PDF过程中发生错误'
+                    };
+                    pdfGenerated.value = false;
+                } finally {
+                }
+            };
+
+            const submitProForm = async () => {
+                const requestData = {
+                    params: JSON.parse(schemaJson.value)
+                };
+                console.log('Request Body:', requestData);
+                await fetch(`${window.pdf_prefix}/${window.saveTemplate}/${id.value}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                status.message = "保存成功";
+            };
+
+            const formatStr = (refVal) => {
+                schemaJson.value = JSON.stringify(JSON.parse(refVal), null, '\t')
+            }
+
+            watch(formData, (newVal) => {
+                if (newVal.quantity && newVal.unitPrice) {
+                    newVal.totalAmount = newVal.quantity * newVal.unitPrice;
+                }
+                updateTemplatePreview();
+            }, {deep: true});
+
+            return {
+                currentTab,
+                schemaJson,
+                formFields,
+                formData,
+                status,
+                contractTemplate,
+                compiledTemplate,
+                availableVariables,
+                pdfGenerated,
+                generateForm,
+                submitProForm,
+                loadExample,
+                resetForm,
+                saveFormData,
+                updateTemplatePreview,
+                saveHTML,
+                loadTemplateExample,
+                generatePDF,
+                formatStr,
+                // 编辑器相关
+                editorContent,
+                theme,
+                switchTab,
+                editorStatus,
+                formatCode,
+                resetEditor
+            };
+        }
+    }).mount('#app');
+</script>
+
+<script>
+    //页面加载完毕的回调函数，将goravel的共享模板变量绑定到window对象上，同时设置不可修改
+    window.onload = function () {
+        if (document.querySelector("#pdf_save_path")) {
+            console.log(document.querySelector("#pdf_save_path").innerHTML)
+            window.pdf_save_path = document.querySelector("#pdf_save_path").innerHTML;
+            Object.defineProperty(window, 'pdf_save_path', {
+                writable: false,
+            })
+        }
+        if (document.querySelector("#getDefaultTemplate")) {
+            console.log(document.querySelector("#getDefaultTemplate").innerHTML)
+            window.getDefaultTemplate = document.querySelector("#getDefaultTemplate").innerHTML;
+            Object.defineProperty(window, 'getDefaultTemplate', {
+                writable: false,
+            })
+        }
+        if (document.querySelector("#saveTemplate")) {
+            console.log(document.querySelector("#saveTemplate").innerHTML)
+            window.saveTemplate = document.querySelector("#saveTemplate").innerHTML;
+            Object.defineProperty(window, 'saveTemplate', {
+                writable: false,
+            })
+        }
+
+        if (document.querySelector("#saveHTML")) {
+            console.log(document.querySelector("#saveHTML").innerHTML)
+            window.saveHTML = document.querySelector("#saveHTML").innerHTML;
+            Object.defineProperty(window, 'saveHTML', {
+                writable: false,
+            })
+        }
+
+        if (document.querySelector("#getIndexTemplate")) {
+            console.log(document.querySelector("#getIndexTemplate").innerHTML)
+            window.getIndexTemplate = document.querySelector("#getIndexTemplate").innerHTML;
+            Object.defineProperty(window, 'getIndexTemplate', {
+                writable: false
+            })
+        }
+        if (document.querySelector("#generate")) {
+            console.log(document.querySelector("#generate").innerHTML)
+            window.generate = document.querySelector("#generate").innerHTML;
+            Object.defineProperty(window, 'generate', {
+                writable: false
+            })
+        }
+        if (document.querySelector("#pdf_prefix")) {
+            console.log(document.querySelector("#pdf_prefix").innerHTML)
+            window.pdf_prefix = document.querySelector("#pdf_prefix").innerHTML;
+            Object.defineProperty(window, 'pdf_prefix', {
+                writable: false
+            })
+        }
+    }
+</script>
+
+</body>
+</html>

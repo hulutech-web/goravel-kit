@@ -1,0 +1,2 @@
+import{f as n}from"./function-bind.61637ca6.1755792467188.js";import{t}from"./es-errors.c75f5a96.1755792467188.js";var p=Function.prototype.call,a,l;function e(){return l||(l=1,a=Function.prototype.apply),a}var c=typeof Reflect<"u"&&Reflect&&Reflect.apply,i=n,o=e(),f=p,u=c,y=u||i.call(f,o),v=n,d=t,A=p,$=y,F=function(r){if(r.length<1||typeof r[0]!="function")throw new d("a function is required");return $(v,A,r)};export{F as c,p as f,e as r};
+//# sourceMappingURL=call-bind-apply-helpers.3b76562e.1755792467188.js.map

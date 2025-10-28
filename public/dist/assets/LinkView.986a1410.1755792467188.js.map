@@ -1,0 +1,1 @@
+{"version":3,"file":"LinkView.986a1410.1755792467188.js","sources":["../../src/components/layout/LinkView.vue"],"sourcesContent":["<template>\n  <div>link view</div>\n</template>\n"],"names":["_openBlock","_createElementBlock"],"mappings":"ghFACE,OAAAA,EAAA,EAAAC,EAAA,MAAA,KAAA,WAAA"}
