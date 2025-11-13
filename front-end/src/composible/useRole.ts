@@ -121,7 +121,7 @@ export default () => {
             sort: true, // 启用排序代理，当点击排序时会自动触发 query 行为
             filter: true, // 启用筛选代理，当点击筛选时会自动触发 query 行为
             form: true, // 启用表单代理，当点击表单提交按钮时会自动触发 reload 行为
-            props: {
+            response: {
                 // 对应响应结果 Promise<{ result: [], page: { total: 100 } }>
                 result: "data", // 配置响应结果列表字段
                 total: "total", // 配置响应结果总页数字段
